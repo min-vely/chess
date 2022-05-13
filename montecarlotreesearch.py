@@ -1,7 +1,10 @@
+import board
+
+
 import numpy as np
 import logging
 
-from gamestate import GameState
+#from gamestate import GameState
 from montecarlotreesearchnode import MonteCarloTreeSearchNode
 
 
@@ -10,7 +13,7 @@ class MonteCarloTreeSearch:
     # Only get the best move to make according to simulation, regardless of how deep the actual game tree is.
     # Note that, at number_of_simulation = inf, MCTS --> Minimax.
     @staticmethod
-    def get_best_move(game_state: GameState, number_of_simulation=100):
+    def get_best_move(game_state: board, number_of_simulation=100):
         root = MonteCarloTreeSearchNode(game_state, None)
         for i in range(number_of_simulation):
             logging.debug(f'\nIteration number: {i + 1}')
