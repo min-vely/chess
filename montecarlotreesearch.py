@@ -24,7 +24,7 @@ class MonteCarloTreeSearch:
         MonteCarloTreeSearch.__print_tree(root)
 
         # When finally choosing an action, we shouldn't be exploring.
-        return root.select_child_with_max_ucb(c=0).action
+        return root.select_child_with_random().action
 
     @staticmethod
     def __print_tree(root: MonteCarloTreeSearchNode):
