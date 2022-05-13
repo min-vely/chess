@@ -4,6 +4,7 @@ import board
 from __future__ import annotations
 import logging
 import numpy as np
+import random
 
 from drawplayer import SingletonDrawPlayer
 #from gamestate import GameState
@@ -29,7 +30,7 @@ class MonteCarloTreeSearchNode:
             if not leaf_node.is_fully_expanded:
                 return leaf_node.expand()
             else:
-                leaf_node = leaf_node.select_child_with_max_ucb(c)
+                leaf_node = leaf_node.select_child_with_random()
 
         return leaf_node
 
@@ -57,15 +58,18 @@ class MonteCarloTreeSearchNode:
         self.wins[who_won] += 1
         if self.parent is not None:
             self.parent.backpropagate(who_won)
+            
+    def select_child_with_random(self):
+        return random.choice(self.children)
 
-    # This ratio tries to maximize the winning. It doesn't try to minimize losing.
-    def select_child_with_max_ucb(self, c) -> MonteCarloTreeSearchNode:
-        ucb_values = list(map(lambda child: MonteCarloTreeSearchNode.get_ucb(child, c), self.children))
-        return self.children[np.argmax(ucb_values)]
+#     # This ratio tries to maximize the winning. It doesn't try to minimize losing.
+#     def select_child_with_max_ucb(self, c) -> MonteCarloTreeSearchNode:
+#         ucb_values = list(map(lambda child: MonteCarloTreeSearchNode.get_ucb(child, c), self.children))
+#         return self.children[np.argmax(ucb_values)]
 
-    @staticmethod
-    def get_ucb(child: MonteCarloTreeSearchNode, c: float):
-        return child.win_ratio + c * np.sqrt(np.log(child.parent.visits) / child.visits)
+#     @staticmethod
+#     def get_ucb(child: MonteCarloTreeSearchNode, c: float):
+#         return child.win_ratio + c * np.sqrt(np.log(child.parent.visits) / child.visits)
 
     @staticmethod
     def get_move_from_rollout_strategy(rollout_state: board) -> int:
@@ -89,15 +93,15 @@ class MonteCarloTreeSearchNode:
     def is_terminal(self):
         return self.game_state.winner is not None
 
-    def __get_self_ucb(self, c=np.sqrt(2)):
-        if self.parent is not None:
-            return self.win_ratio + c * np.sqrt(np.log(self.parent.visits) / self.visits)
-        return 0
+#     def __get_self_ucb(self, c=np.sqrt(2)):
+#         if self.parent is not None:
+#             return self.win_ratio + c * np.sqrt(np.log(self.parent.visits) / self.visits)
+#         return 0
 
     def __repr__(self):
         return f'TreeNode: {id(self)}'
 
     def __str__(self):
         return f'TreeNode: {id(self)}, action: {self.action}, number of visits: {self.visits}, ' \
-               f'win ratio: {self.win_ratio}, ucb: {self.__get_self_ucb()} fully expanded: {self.is_fully_expanded}, ' \
+               #f'win ratio: {self.win_ratio}, ucb: {self.__get_self_ucb()} fully expanded: {self.is_fully_expanded}, ' \
                f'children: {self.children}, turn: {self.game_state.turn}, game: \n{self.game_state}'
