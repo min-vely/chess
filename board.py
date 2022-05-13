@@ -1,4 +1,4 @@
-import pieces, ai
+import pieces, mmab, mcts
 
 class Board:
 
