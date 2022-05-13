@@ -7,7 +7,7 @@ import numpy as np
 
 from drawplayer import SingletonDrawPlayer
 #from gamestate import GameState
-from rolloutstrategyhelper import RolloutStrategyHelper
+#from rolloutstrategyhelper import RolloutStrategyHelper
 
 
 class MonteCarloTreeSearchNode:
@@ -69,7 +69,7 @@ class MonteCarloTreeSearchNode:
 
     @staticmethod
     def get_move_from_rollout_strategy(rollout_state: board) -> int:
-        return RolloutStrategyHelper.get_heuristic_move(rollout_state)
+        return pieces.Piece.get_move(rollout_state)
 
     @property
     def win_ratio(self):
