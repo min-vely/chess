@@ -18,7 +18,7 @@ class MonteCarloTreeSearchNode:
         self.parent = parent
         self.action = action
         self.children = np.array([], dtype=MonteCarloTreeSearchNode)
-        self.untried_actions = game_state.get_valid_moves()
+        self.untried_actions = pieces.Piece.get_possible_moves(board)
         self.wins = dict(map(lambda player: (player, 0), game_state.players))
         self.wins[SingletonDrawPlayer] = 0
         self.visits = 0
@@ -36,7 +36,7 @@ class MonteCarloTreeSearchNode:
     def expand(self) -> MonteCarloTreeSearchNode:
         logging.debug(f'Expanding for {self.__repr__()}')
         action = self.untried_actions.pop()
-        new_game_state = self.game_state.make_move(action)
+        new_game_state = self.game_state.perform_move(action)
         child_node = MonteCarloTreeSearchNode(new_game_state, self, action)
         self.children = np.append(self.children, child_node)
         logging.debug(f'Created {child_node.__repr__()}')
@@ -48,7 +48,7 @@ class MonteCarloTreeSearchNode:
         rollout_state = self.game_state
         while not rollout_state.is_game_over:
             move = MonteCarloTreeSearchNode.get_move_from_rollout_strategy(rollout_state)
-            rollout_state = rollout_state.make_move(move)
+            rollout_state = rollout_state.perform_move(move)
         logging.debug(f'The winner of this rollout: {rollout_state.winner}')
         return rollout_state.winner
 
@@ -83,7 +83,7 @@ class MonteCarloTreeSearchNode:
 
     @property
     def is_fully_expanded(self):
-        return len(self.children) == len(self.game_state.get_valid_moves())
+        return len(self.children) == len(self.game_state.get_possible_moves())
 
     @property
     def is_terminal(self):
