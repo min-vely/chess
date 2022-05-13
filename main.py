@@ -1,4 +1,4 @@
-import board, pieces, mmab
+import board, pieces, mmab, mcts
 
 from functools import partial
 import logging
@@ -6,15 +6,11 @@ import numpy as np
 import random
 import sys
 
-from gamestate import GameState
+# from gamestate import GameState
 # from minimax import Minimax
-from montecarlotreesearch import MonteCarloTreeSearch
-from player import Player
+# from montecarlotreesearch import MonteCarloTreeSearch
+# from player import Player
 
-
-
-def partial_mcts(number_of_simulation, game_state):
-    return MonteCarloTreeSearch.get_best_move(game_state, number_of_simulation)
 
 
 # # Returns a move object based on the users input. Does not check if the move is valid.
@@ -84,7 +80,7 @@ board = board.Board.new()
 print(board.to_string())
 
 while True:
-    MCTS_move = partial_mcts.get_MCTS_move(board)
+    MCTS_move = mcts.MCTS.get_MCTS_move(board, [])
     if (MCTS_move == 0):
         if (board.is_check(pieces.Piece.WHITE)):
             print("Checkmate. Black Wins.")
