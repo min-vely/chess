@@ -1,16 +1,19 @@
+import board
+
+
 from __future__ import annotations
 import logging
 import numpy as np
 
 from drawplayer import SingletonDrawPlayer
-from gamestate import GameState
+#from gamestate import GameState
 from rolloutstrategyhelper import RolloutStrategyHelper
 
 
 class MonteCarloTreeSearchNode:
     # This action in the params is the action that the player from the parent MCTS node, i.e. the prev game state, has
     # played. This information is critical for when we're calculating the win ratio (see below).
-    def __init__(self, game_state: GameState, parent: MonteCarloTreeSearchNode, action=None):
+    def __init__(self, game_state: board, parent: MonteCarloTreeSearchNode, action=None):
         self.game_state = game_state
         self.parent = parent
         self.action = action
@@ -65,7 +68,7 @@ class MonteCarloTreeSearchNode:
         return child.win_ratio + c * np.sqrt(np.log(child.parent.visits) / child.visits)
 
     @staticmethod
-    def get_move_from_rollout_strategy(rollout_state: GameState) -> int:
+    def get_move_from_rollout_strategy(rollout_state: board) -> int:
         return RolloutStrategyHelper.get_heuristic_move(rollout_state)
 
     @property
